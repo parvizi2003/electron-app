@@ -1,42 +1,35 @@
-import { app, BrowserWindow, Menu } from 'electron';
-import { ipcMainHandle, ipcMainOn, isDev } from './util.js';
-import { getStaticData, pollResources } from './resourceManager.js';
-import { getPreloadPath, getUIPath } from './pathResolver.js';
-import { createTray } from './tray.js';
-import { createMenu } from './menu.js';
+import { app, BrowserWindow } from "electron";
+import { ipcMainHandle, ipcMainOn, isDev } from "./util.js";
 
-app.on('ready', () => {
+import { getPreloadPath, getUIPath } from "./pathResolver.js";
+import { createTray } from "./tray.js";
+import { createMenu } from "./menu.js";
+import { deleteToken, getToken, setToken } from "./token-manager.js";
+
+app.on("ready", () => {
   const mainWindow = new BrowserWindow({
     webPreferences: {
       preload: getPreloadPath(),
     },
-    // disables default system frame (dont do this if you want a proper working menu bar)
-    frame: false,
   });
+
   if (isDev()) {
-    mainWindow.loadURL('http://localhost:5123');
+    mainWindow.loadURL("http://localhost:5123");
   } else {
     mainWindow.loadFile(getUIPath());
   }
 
-  pollResources(mainWindow);
-
-  ipcMainHandle('getStaticData', () => {
-    return getStaticData();
+  ipcMainHandle("setToken", async (_, token) => {
+    await setToken(token);
+    return true; // или строку, если хочешь
   });
 
-  ipcMainOn('sendFrameAction', (payload) => {
-    switch (payload) {
-      case 'CLOSE':
-        mainWindow.close();
-        break;
-      case 'MAXIMIZE':
-        mainWindow.maximize();
-        break;
-      case 'MINIMIZE':
-        mainWindow.minimize();
-        break;
-    }
+  ipcMainHandle("getToken", async () => {
+    return await getToken();
+  });
+
+  ipcMainHandle("deleteToken", async () => {
+    return await deleteToken();
   });
 
   createTray(mainWindow);
@@ -47,7 +40,7 @@ app.on('ready', () => {
 function handleCloseEvents(mainWindow: BrowserWindow) {
   let willClose = false;
 
-  mainWindow.on('close', (e) => {
+  mainWindow.on("close", (e) => {
     if (willClose) {
       return;
     }
@@ -58,11 +51,11 @@ function handleCloseEvents(mainWindow: BrowserWindow) {
     }
   });
 
-  app.on('before-quit', () => {
+  app.on("before-quit", () => {
     willClose = true;
   });
 
-  mainWindow.on('show', () => {
+  mainWindow.on("show", () => {
     willClose = false;
   });
 }

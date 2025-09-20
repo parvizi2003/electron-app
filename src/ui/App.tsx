@@ -1,128 +1,60 @@
-import { useEffect, useMemo, useState } from 'react';
-import reactLogo from './assets/react.svg';
-import './App.css';
-import { useStatistics } from './useStatistics';
-import { Chart } from './Chart';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useEffect, useState } from "react";
 
-function App() {
-  const staticData = useStaticData();
-  const statistics = useStatistics(10);
-  const [activeView, setActiveView] = useState<View>('CPU');
-  const cpuUsages = useMemo(
-    () => statistics.map((stat) => stat.cpuUsage),
-    [statistics]
-  );
-  const ramUsages = useMemo(
-    () => statistics.map((stat) => stat.ramUsage),
-    [statistics]
-  );
-  const storageUsages = useMemo(
-    () => statistics.map((stat) => stat.storageUsage),
-    [statistics]
-  );
-  const activeUsages = useMemo(() => {
-    switch (activeView) {
-      case 'CPU':
-        return cpuUsages;
-      case 'RAM':
-        return ramUsages;
-      case 'STORAGE':
-        return storageUsages;
-    }
-  }, [activeView, cpuUsages, ramUsages, storageUsages]);
+export default function App() {
+  const [token, setToken] = useState<string | null>(null);
+  const [value, setValue] = useState("");
+  const [refreshTokenTrigger, setRefreshTokenTrigger] = useState(0); // 🔄 Trigger to re-fetch
 
+  // Get token when component mounts or trigger updates
   useEffect(() => {
-    return window.electron.subscribeChangeView((view) => setActiveView(view));
-  }, []);
+    async function setElectronToken() {
+      try {
+        const electronToken = await window.electron.getToken();
+        setToken(electronToken);
+      } catch (err) {
+        console.error("Failed to fetch token:", err);
+        setToken(null);
+      }
+    }
+    setElectronToken();
+  }, [refreshTokenTrigger]); // <- re-run when this changes
+
+  // 🔘 When user sets a new token
+  const handleSetToken = () => {
+    window.electron.setToken(value);
+    setValue(""); // optional: clear input
+    setRefreshTokenTrigger((prev) => prev + 1); // trigger useEffect
+  };
+
+  // ❌ When user deletes the token
+  const handleDeleteToken = async () => {
+    await window.electron.deleteToken();
+    setRefreshTokenTrigger((prev) => prev + 1); // trigger useEffect
+  };
 
   return (
-    <div className="App">
-      <Header />
-      <div className="main">
-        <div>
-          <SelectOption
-            onClick={() => setActiveView('CPU')}
-            title="CPU"
-            view="CPU"
-            subTitle={staticData?.cpuModel ?? ''}
-            data={cpuUsages}
-          />
-          <SelectOption
-            onClick={() => setActiveView('RAM')}
-            title="RAM"
-            view="RAM"
-            subTitle={(staticData?.totalMemoryGB.toString() ?? '') + ' GB'}
-            data={ramUsages}
-          />
-          <SelectOption
-            onClick={() => setActiveView('STORAGE')}
-            title="STORAGE"
-            view="STORAGE"
-            subTitle={(staticData?.totalStorage.toString() ?? '') + ' GB'}
-            data={storageUsages}
-          />
-        </div>
-        <div className="mainGrid">
-          <Chart
-            selectedView={activeView}
-            data={activeUsages}
-            maxDataPoints={10}
-          />
-        </div>
+    <div className="container mx-auto mt-4">
+      <h1 className="font-bold text-2xl text-center">Hello from Main Page</h1>
+
+      <div className="flex gap-10 items-center mx-auto w-fit mt-4">
+        <h2>Token: {token}</h2>
+        <Button onClick={handleDeleteToken} variant="destructive">
+          Delete Token
+        </Button>
+      </div>
+
+      <div className="flex flex-col gap-4 max-w-2xl mx-auto mt-6">
+        <Input
+          placeholder="Set Token"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+        />
+        <Button type="submit" onClick={handleSetToken}>
+          Submit
+        </Button>
       </div>
     </div>
   );
 }
-
-function SelectOption(props: {
-  title: string;
-  view: View;
-  subTitle: string;
-  data: number[];
-  onClick: () => void;
-}) {
-  return (
-    <button className="selectOption" onClick={props.onClick}>
-      <div className="selectOptionTitle">
-        <div>{props.title}</div>
-        <div>{props.subTitle}</div>
-      </div>
-      <div className="selectOptionChart">
-        <Chart selectedView={props.view} data={props.data} maxDataPoints={10} />
-      </div>
-    </button>
-  );
-}
-
-function Header() {
-  return (
-    <header>
-      <button
-        id="close"
-        onClick={() => window.electron.sendFrameAction('CLOSE')}
-      />
-      <button
-        id="minimize"
-        onClick={() => window.electron.sendFrameAction('MINIMIZE')}
-      />
-      <button
-        id="maximize"
-        onClick={() => window.electron.sendFrameAction('MAXIMIZE')}
-      />
-    </header>
-  );
-}
-
-function useStaticData() {
-  const [staticData, setStaticData] = useState<StaticData | null>(null);
-
-  useEffect(() => {
-    (async () => {
-      setStaticData(await window.electron.getStaticData());
-    })();
-  }, []);
-
-  return staticData;
-}
-
-export default App;
