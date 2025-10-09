@@ -1,5 +1,5 @@
-import { app, BrowserWindow } from "electron";
-import { ipcMainHandle, ipcMainOn, isDev } from "./util.js";
+import { app, BrowserWindow, screen } from "electron";
+import { ipcMainHandle, isDev } from "./util.js";
 
 import { getPreloadPath, getUIPath } from "./pathResolver.js";
 import { createTray } from "./tray.js";
@@ -7,7 +7,15 @@ import { createMenu } from "./menu.js";
 import { deleteToken, getToken, setToken } from "./token-manager.js";
 
 app.on("ready", () => {
+  const primaryDisplay = screen.getPrimaryDisplay();
+  const { x, y, width, height } = primaryDisplay.workArea;
+
   const mainWindow = new BrowserWindow({
+    x,
+    y,
+    width,
+    height,
+
     webPreferences: {
       preload: getPreloadPath(),
     },
@@ -21,7 +29,7 @@ app.on("ready", () => {
 
   ipcMainHandle("setToken", async (_, token) => {
     await setToken(token);
-    return true; // или строку, если хочешь
+    return true;
   });
 
   ipcMainHandle("getToken", async () => {

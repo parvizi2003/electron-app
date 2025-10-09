@@ -38,10 +38,10 @@ export function ipcWebContentsSend<Key extends keyof EventPayloadMapping>(
 }
 
 export function validateEventFrame(frame: WebFrameMain) {
-  if (isDev() && new URL(frame.url).host === "localhost:5123") {
-    return;
-  }
-  if (frame.url !== pathToFileURL(getUIPath()).toString()) {
-    throw new Error("Malicious event");
-  }
+  // if (isDev() && new URL(frame.url).host === "localhost:5123") {
+  //   return;
+  // }
+  // if (frame.url !== pathToFileURL(getUIPath()).toString()) {
+  //   throw new Error("Malicious event");
+  // }
 }

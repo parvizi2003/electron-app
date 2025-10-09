@@ -1,6 +1,6 @@
-const electron = require("electron");
+import { contextBridge, ipcRenderer } from "electron";
 
-electron.contextBridge.exposeInMainWorld("electron", {
+contextBridge.exposeInMainWorld("electron", {
   getToken: () => ipcInvoke("getToken"),
   setToken: (token) => ipcInvoke("setToken", token),
   deleteToken: () => ipcInvoke("deleteToken"),
@@ -10,7 +10,7 @@ function ipcInvoke<Key extends keyof EventPayloadMapping>(
   key: Key,
   payload?: any
 ): Promise<EventPayloadMapping[Key]> {
-  return electron.ipcRenderer.invoke(key, payload);
+  return ipcRenderer.invoke(key, payload);
 }
 
 function ipcOn<Key extends keyof EventPayloadMapping>(
@@ -18,13 +18,13 @@ function ipcOn<Key extends keyof EventPayloadMapping>(
   callback: (payload: EventPayloadMapping[Key]) => void
 ) {
   const cb = (_: Electron.IpcRendererEvent, payload: any) => callback(payload);
-  electron.ipcRenderer.on(key, cb);
-  return () => electron.ipcRenderer.off(key, cb);
+  ipcRenderer.on(key, cb);
+  return () => ipcRenderer.off(key, cb);
 }
 
 function ipcSend<Key extends keyof EventPayloadMapping>(
   key: Key,
   payload: EventPayloadMapping[Key]
 ) {
-  electron.ipcRenderer.send(key, payload);
+  ipcRenderer.send(key, payload);
 }
