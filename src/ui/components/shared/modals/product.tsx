@@ -42,7 +42,6 @@ export function ProductModal({ product }: { product: Product }) {
     setIsOpen(false);
   };
 
-  // ⌨️ Обработка клавиатуры
   useEffect(() => {
     if (!isOpen) return;
 
@@ -55,8 +54,6 @@ export function ProductModal({ product }: { product: Product }) {
         handleAdd();
       }
     };
-
-    console.log(product.name);
 
     window.addEventListener("keydown", handleKey);
 

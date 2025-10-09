@@ -7,8 +7,6 @@ import { Link } from "react-router-dom";
 export function OrdersIndex() {
   const { orders } = useOrdersList();
 
-  console.log(orders);
-
   return (
     <div className="h-full w-full p-4">
       <h2 className="mb-6 text-2xl font-bold text-gray-800">Orders</h2>
