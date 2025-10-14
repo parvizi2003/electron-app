@@ -14,14 +14,16 @@ import {
 } from "@/components/ui";
 import type { LoginFormValues } from "@/types";
 import { useLogin } from "@/api/auth/use-login";
+import { useEffect } from "react";
 
 export function Login() {
+  const { handleLogin, isPending } = useLogin();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormValues>();
-  const { handleLogin, isPending } = useLogin();
 
   const onSubmit: SubmitHandler<LoginFormValues> = (data) => {
     handleLogin(data);

@@ -4,6 +4,7 @@ import { queryClient } from "../query-client";
 import type { LoginFormValues } from "@/types";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { ApiError } from "../api-instance";
 
 export function useLogin() {
   const navigate = useNavigate();
@@ -17,7 +18,12 @@ export function useLogin() {
       navigate("/");
     },
     onError: (err: any) => {
-      toast.error(err?.data?.message || "Ошибка авторизации");
+      if (err instanceof ApiError) {
+        toast.error(err.message || "Ошибка авторизации");
+        console.log(err);
+      } else {
+        toast.error("Неизвестная ошибка");
+      }
     },
   });
 
@@ -28,7 +34,6 @@ export function useLogin() {
   return {
     handleLogin,
     isPending: loginMutation.isPending,
-    isError: loginMutation.isError,
-    isSuccess: loginMutation.isSuccess,
+    error: loginMutation.error,
   };
 }

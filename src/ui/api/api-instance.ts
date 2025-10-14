@@ -3,7 +3,7 @@ export const IMAGE_URL = "http://laravel-pizza.test:8000/storage/";
 
 export class ApiError extends Error {
   constructor(response: Response) {
-    super("ApiError" + response.status);
+    super("ApiError: " + response.statusText);
   }
 }
 
@@ -40,7 +40,6 @@ export const jsonApiInstance = async <T>(
   });
 
   if (!result.ok) {
-    console.error("API Error:", result);
     throw new ApiError(result);
   }
 

@@ -82,3 +82,8 @@ export type OrderItem = {
 export interface OrderWithItems extends Order {
   items: OrderItem[];
 }
+
+export type ErrorResponse = {
+  message: string;
+  errors?: Record<string, string[]>;
+};

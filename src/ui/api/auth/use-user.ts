@@ -7,14 +7,14 @@ export function useUser() {
   let error = null;
 
   try {
-    const { data, isPending } = useSuspenseQuery({
+    const { data } = useSuspenseQuery({
       ...authApi.getUser(),
       retry: false,
     });
+
     user = data;
   } catch (err: any) {
     error = err;
-
     if (err instanceof ApiError) {
       user = null;
     } else {
