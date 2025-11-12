@@ -1,11 +1,11 @@
-import { useOrdersList } from "@/api/orders/use-orders-list";
+import { useGetCookOrders } from "@/api/cook/use-get-cook-roders";
 import { Button } from "@/components/ui";
 import { cn } from "@/lib/utils";
 import { Pencil } from "lucide-react";
 import { Link } from "react-router-dom";
 
-export function OrdersIndex() {
-  const { orders } = useOrdersList();
+export function CookOrders() {
+  const { orders } = useGetCookOrders();
 
   return (
     <div className="h-full w-full p-4">
@@ -17,15 +17,7 @@ export function OrdersIndex() {
               <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">
                 ID
               </th>
-              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">
-                User Name
-              </th>
-              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">
-                Phone Number
-              </th>
-              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">
-                Address
-              </th>
+
               <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">
                 Total
               </th>
@@ -39,15 +31,7 @@ export function OrdersIndex() {
             {orders.map((order) => (
               <tr key={order.id} className="hover:bg-gray-50">
                 <td className="px-4 py-2 text-sm text-gray-800">{order.id}</td>
-                <td className="px-4 py-2 text-sm text-gray-800">
-                  {order.user_name}
-                </td>
-                <td className="px-4 py-2 text-sm text-gray-800">
-                  {order.phone_number}
-                </td>
-                <td className="px-4 py-2 text-sm text-gray-800">
-                  {order.address}
-                </td>
+
                 <td className="px-4 py-2 text-sm text-gray-800">
                   ${order.total.toFixed(2)}
                 </td>

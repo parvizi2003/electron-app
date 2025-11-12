@@ -7,16 +7,13 @@ export class ApiError extends Error {
   }
 }
 
-export async function getToken() {
-  return await window.electron.getToken();
-}
-
 export const jsonApiInstance = async <T>(
   url: string,
   init?: RequestInit & { json?: unknown }
 ) => {
   let headers = init?.headers ?? {};
-  const token = await getToken();
+
+  const token = await window.electron.getToken("auth");
 
   if (token) {
     headers = {
@@ -36,7 +33,7 @@ export const jsonApiInstance = async <T>(
   const result = await fetch(`${API_URL}${url}`, {
     ...init,
     headers,
-    credentials: "include",
+    // credentials: "include",
   });
 
   if (!result.ok) {

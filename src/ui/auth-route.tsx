@@ -2,7 +2,11 @@ import { Navigate, Outlet } from "react-router-dom";
 import { useUser } from "@/api/auth/use-user";
 import { MainLayout } from "@/layouts/main-layout";
 
-export function AuthRoute() {
+interface AuthRouteProps {
+  allowedRoles?: string[];
+}
+
+export function AuthRoute({ allowedRoles }: AuthRouteProps) {
   const { user } = useUser();
 
   if (!user) {

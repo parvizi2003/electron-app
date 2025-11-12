@@ -1,9 +1,10 @@
 import { contextBridge, ipcRenderer } from "electron";
 
 contextBridge.exposeInMainWorld("electron", {
-  getToken: () => ipcInvoke("getToken"),
-  setToken: (token) => ipcInvoke("setToken", token),
-  deleteToken: () => ipcInvoke("deleteToken"),
+  getToken: (name: string) => ipcInvoke("getToken", name),
+  setToken: (name: string, token: string) =>
+    ipcInvoke("setToken", { name, token }),
+  deleteToken: (name: string) => ipcInvoke("deleteToken", name),
 } satisfies Window["electron"]);
 
 function ipcInvoke<Key extends keyof EventPayloadMapping>(

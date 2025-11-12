@@ -1,6 +1,6 @@
 import { ipcMain, WebContents, WebFrameMain } from "electron";
-import { getUIPath } from "./pathResolver.js";
-import { pathToFileURL } from "url";
+// import { getUIPath } from "./pathResolver.js";
+// import { pathToFileURL } from "url";
 
 export function isDev(): boolean {
   return process.env.NODE_ENV === "development";

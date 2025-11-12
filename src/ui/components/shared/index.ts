@@ -8,7 +8,8 @@ export { CartItem } from "./cart/item";
 export { CartFooter } from "./cart/footer";
 export { OrderItem } from "./order-item";
 export { AppSidebar } from "./app-sidebar";
-
 export { OrderConfirm } from "./modals/order-confirm";
 export { ClearCartConfirm } from "./modals/clear-cart-confirm";
 export { DeleteCartItemConfirm } from "./modals/delete-cart-item-confirm";
+export { CookPendingOrder } from "./cook-pending-order";
+export { CookOrderCard } from "./cook-order-card";

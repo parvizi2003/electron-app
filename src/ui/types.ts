@@ -4,7 +4,7 @@ export type User = {
   email: string | null;
   phone_number: string | null;
   address: string | null;
-  role: string;
+  role: "CASHIER" | "COOK";
 };
 
 export type LoginFormValues = {

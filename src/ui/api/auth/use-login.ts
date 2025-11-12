@@ -12,17 +12,18 @@ export function useLogin() {
     mutationFn: authApi.login,
     onSuccess: async (res) => {
       toast.success(res.message);
-      await window.electron.setToken(res.token);
+      await window.electron.setToken("auth", res.token);
 
       await queryClient.invalidateQueries(authApi.getUser());
       navigate("/");
     },
+
     onError: (err: any) => {
       if (err instanceof ApiError) {
         toast.error(err.message || "Ошибка авторизации");
-        console.log(err);
       } else {
         toast.error("Неизвестная ошибка");
+        console.error(err);
       }
     },
   });

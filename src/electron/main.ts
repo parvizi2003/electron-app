@@ -15,7 +15,6 @@ app.on("ready", () => {
     y,
     width,
     height,
-
     webPreferences: {
       preload: getPreloadPath(),
     },
@@ -27,22 +26,36 @@ app.on("ready", () => {
     mainWindow.loadFile(getUIPath());
   }
 
-  ipcMainHandle("setToken", async (_, token) => {
-    await setToken(token);
-    return true;
+  ipcMainHandle(
+    "setToken",
+    async (_, payload: { name: string; token: string }) => {
+      const { name, token } = payload;
+
+      await setToken(name, token);
+      return true;
+    }
+  );
+
+  ipcMainHandle("getToken", async (_, name: string) => {
+    return await getToken(name);
   });
 
-  ipcMainHandle("getToken", async () => {
-    return await getToken();
-  });
-
-  ipcMainHandle("deleteToken", async () => {
-    return await deleteToken();
+  ipcMainHandle("deleteToken", async (_, name: string) => {
+    return await deleteToken(name);
   });
 
   createTray(mainWindow);
   handleCloseEvents(mainWindow);
   createMenu(mainWindow);
+});
+
+app.on("before-quit", async () => {
+  try {
+    await deleteToken("auth");
+    console.log("Auth token deleted on quit");
+  } catch (err) {
+    console.error("Failed to delete auth token on quit:", err);
+  }
 });
 
 function handleCloseEvents(mainWindow: BrowserWindow) {

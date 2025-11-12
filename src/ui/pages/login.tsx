@@ -17,7 +17,7 @@ import { useLogin } from "@/api/auth/use-login";
 import { useEffect } from "react";
 
 export function Login() {
-  const { handleLogin, isPending } = useLogin();
+  const { handleLogin, isPending, error } = useLogin();
 
   const {
     register,
@@ -29,6 +29,11 @@ export function Login() {
     handleLogin(data);
   };
 
+  useEffect(() => {
+    if (error) {
+      console.error("Login error:", error.message);
+    }
+  }, [error]);
   return (
     <AuthLayout>
       <Card className="w-full max-w-sm">
@@ -36,7 +41,6 @@ export function Login() {
           <CardTitle>Login to your account</CardTitle>
           <CardDescription>Enter your email and password below</CardDescription>
         </CardHeader>
-
         <CardContent>
           <form
             id="loginForm"
@@ -55,6 +59,7 @@ export function Login() {
                   tabIndex={1}
                   {...register("email", { required: "Email is required" })}
                 />
+
                 <InputError message={errors.email?.message} />
               </div>
 
@@ -86,7 +91,7 @@ export function Login() {
             form="loginForm"
             className="w-full"
             tabIndex={3}
-            loading={isPending}
+            // loading={isPending}
           >
             Log in
           </Button>

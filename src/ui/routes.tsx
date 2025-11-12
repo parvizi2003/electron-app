@@ -4,6 +4,10 @@ import { GuestRoute } from "./guest-route";
 
 import { Login, Home, OrdersShow, OrdersIndex } from "./pages";
 import ErrorPage from "./pages/error-page";
+import { NoAccess } from "./pages/no-access";
+import { RoleBasedRouting } from "./role-based-routing";
+import { CookIndex } from "./pages/cook";
+import { CookOrders } from "./pages/cook/orders";
 
 export const routes: RouteObject[] = [
   {
@@ -18,22 +22,36 @@ export const routes: RouteObject[] = [
     ],
   },
   {
+    path: "/no-access",
+    element: <NoAccess />,
+    errorElement: <ErrorPage />,
+  },
+  {
     path: "/",
-    element: <AuthRoute />,
+    element: <AuthRoute allowedRoles={["CASHIER", "COOK"]} />,
     errorElement: <ErrorPage />,
 
     children: [
       {
         index: true,
-        element: <Home />,
+        element: (
+          <RoleBasedRouting
+            routes={{ CASHIER: <Home />, COOK: <CookIndex /> }}
+          />
+        ),
       },
+
       {
         path: "/categories/:categoryId",
         element: <Home />,
       },
       {
         path: "/orders",
-        element: <OrdersIndex />,
+        element: (
+          <RoleBasedRouting
+            routes={{ COOK: <CookOrders />, CASHIER: <OrdersIndex /> }}
+          />
+        ),
       },
       {
         path: "/orders/:orderId",

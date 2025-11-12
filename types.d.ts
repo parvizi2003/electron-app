@@ -6,8 +6,8 @@ type EventPayloadMapping = {
 
 interface Window {
   electron: {
-    getToken: () => Promise<string | null>;
-    setToken: (token: string) => Promise<boolean>;
-    deleteToken: () => Promise<Boolean>;
+    getToken: (name: string) => Promise<string | null>;
+    setToken: (name: string, token: string) => Promise<boolean>;
+    deleteToken: (name: string) => Promise<Boolean>;
   };
 }

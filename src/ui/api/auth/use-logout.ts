@@ -11,7 +11,7 @@ export function useLogout() {
     mutationFn: authApi.logout,
     onSuccess: async (res) => {
       toast.success(res.message);
-      await window.electron.deleteToken();
+      await window.electron.deleteToken("auth");
       await queryClient.invalidateQueries(authApi.getUser());
       navigate("/login");
       window.location.reload();
