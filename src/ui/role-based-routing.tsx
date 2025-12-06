@@ -14,7 +14,7 @@ export function RoleBasedRouting({ routes }: RoleBasedRoutingProps) {
   if (!user) {
     return <Navigate to="/login" replace />;
   }
-  console.log(user.role);
+
   if (routes[user.role]) {
     return <>{routes[user.role]}</>;
   }

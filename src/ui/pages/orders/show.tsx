@@ -6,7 +6,6 @@ import { useParams } from "react-router-dom";
 export function OrdersShow() {
   const { orderId } = useParams<{ orderId: string }>();
   if (!orderId) {
-    // Обработка случая, если orderId отсутствует
     return <div>Order ID не найден</div>;
   }
 

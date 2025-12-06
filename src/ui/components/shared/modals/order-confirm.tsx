@@ -12,24 +12,23 @@ import {
   DialogTrigger,
 } from "@/components/ui/";
 import { CartItem } from "@/components/shared";
+import { useTranslation } from "react-i18next";
 
 export function OrderConfirm() {
   const { handleStoreOrder, isPending } = useStoreOrder();
   const { cart } = useCart();
-
+  const { t } = useTranslation();
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Button className="mt-auto w-full font-bold text-xl h-12" size="lg">
-          Order
+          {t("order.checkout")}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Order confirmation</DialogTitle>
-          <DialogDescription>
-            Are you shure you want to submit order
-          </DialogDescription>
+          <DialogTitle>{t("order.title")}</DialogTitle>
+          <DialogDescription>{t("order.description")}</DialogDescription>
         </DialogHeader>
         <div className="h-[700px] overflow-y-auto border-y">
           {cart.items.map((item) => (
@@ -38,17 +37,17 @@ export function OrderConfirm() {
         </div>
         <div>
           <h3 className="flex border-b pb-4 text-2xl">
-            <span>Total:</span>
+            <span>{t("cart.total")}:</span>
             <span className="flex-1 border-b border-dashed"></span>
             <strong>{cart.total}</strong>
           </h3>
         </div>
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="outline">Cancel</Button>
+            <Button variant="outline">{t("buttons.cancel")}</Button>
           </DialogClose>
           <Button onClick={handleStoreOrder} loading={isPending}>
-            Order
+            {t("buttons.checkout")}
           </Button>
         </DialogFooter>
       </DialogContent>

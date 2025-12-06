@@ -15,11 +15,11 @@ export function CategoriesList({
   return (
     <ul className="flex w-full gap-x-2 overflow-x-auto border-b p-4">
       {categories.map((category) => (
-        <li key={category.id} className="w-full flex-1">
+        <li key={category.id} className="w-full min-w-[100px] flex-1">
           <Link
             to={`/categories/${category.id}`}
             className={cn(
-              "bg-card text-card-foreground flex w-full flex-col items-center gap-2 rounded-sm border p-4 shadow-sm",
+              "bg-card text-card-foreground flex w-full flex-col items-center gap-2 rounded-sm border p-2 2xl:p-4 shadow-sm",
               activeCategory === String(category.id) &&
                 "bg-primary text-background"
             )}
@@ -27,7 +27,7 @@ export function CategoriesList({
             <img
               src={IMAGE_URL + category.image_url}
               alt={category.image_url}
-              className="size-16"
+              className="size-12 2xl:size-16"
             />
 
             <h3 className="font-bold text-nowrap">{category.name}</h3>

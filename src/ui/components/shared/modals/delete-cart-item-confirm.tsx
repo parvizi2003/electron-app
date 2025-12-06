@@ -12,10 +12,11 @@ import {
 
 import { useDeleteItem } from "@/api/cart/delete-item";
 import { Trash } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export function DeleteCartItemConfirm({ cartItemId }: { cartItemId: number }) {
   const { handleDeleteItem, isPending } = useDeleteItem();
-
+  const { t } = useTranslation();
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -25,21 +26,21 @@ export function DeleteCartItemConfirm({ cartItemId }: { cartItemId: number }) {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Delete cart Item</DialogTitle>
+          <DialogTitle>{t("cart.delete_item.title")}</DialogTitle>
           <DialogDescription>
-            Are you shure you want to delete this cart item?
+            {t("cart.delete_item.description")}
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="outline">Cancel</Button>
+            <Button variant="outline">{t("buttons.cancel")}</Button>
           </DialogClose>
           <Button
             onClick={() => handleDeleteItem(cartItemId)}
             loading={isPending}
             variant="destructive"
           >
-            Delete
+            {t("buttons.delete")}
           </Button>
         </DialogFooter>
       </DialogContent>

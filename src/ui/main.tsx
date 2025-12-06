@@ -8,6 +8,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./api/query-client";
 import { Toaster, SidebarProvider } from "./components/ui";
 import { Loader } from "./pages/loader";
+import "./i18n";
 
 const router = createHashRouter(routes);
 

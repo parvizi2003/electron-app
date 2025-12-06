@@ -16,7 +16,9 @@ export function ProductCard({ product }: { product: Product }) {
             className="h-full w-full "
           />
         </div>
-        <h3 className="text-lg font-bold mb-2">{product.name}</h3>
+        <h3 className="text-sm 2xl:text-lg xl:text-md font-bold mb-2">
+          {product.name}
+        </h3>
         <p className="mt-auto text-base font-semibold ">
           $ {product.price.toFixed(2)}
         </p>

@@ -9,7 +9,7 @@ export function OrdersIndex() {
 
   return (
     <div className="h-full w-full p-4">
-      <h2 className="mb-6 text-2xl font-bold text-gray-800">Orders</h2>
+      <h2 className="mb-6 text-2xl font-bold text-gray-800">Заказы</h2>
       <div className="overflow-hidden rounded-sm border">
         <table className="min-w-full divide-y divide-gray-200 border-gray-200">
           <thead className="bg-gray-100">

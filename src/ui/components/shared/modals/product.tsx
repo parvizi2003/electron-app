@@ -14,70 +14,52 @@ import { ProductCard } from "../product-card";
 import { CartItemWithProduct, Product } from "@/types";
 import { IMAGE_URL } from "@/api/api-instance";
 import { Minus, Plus } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState, useCallback } from "react";
+import { Trans, useTranslation } from "react-i18next";
 
 export function ProductModal({ product }: { product: Product }) {
   const { handleAddToCart } = useAddToCart();
   const [count, setCount] = useState(1);
-  const [isOpen, setIsOpen] = useState(false);
+  const { t } = useTranslation();
 
-  const handleCountChange = (action: "increment" | "decrement") => {
-    setCount((prev) => {
-      return action === "increment" ? prev + 1 : Math.max(1, prev - 1);
-    });
-  };
-
-  const handleAdd = () => {
+  const handleAdd = useCallback(() => {
     const newCartItem: CartItemWithProduct = {
       id: Math.random(),
       cart_id: 0,
       product_id: product.id,
-      product: product,
-      count: count,
+      product,
+      count,
       total: parseFloat((product.price * count).toFixed(2)),
     };
 
     handleAddToCart(newCartItem);
     setCount(1);
-    setIsOpen(false);
+  }, [product, count, handleAddToCart]);
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "ArrowUp") setCount((prev) => prev + 1);
+    if (e.key === "ArrowDown") setCount((prev) => Math.max(1, prev - 1));
+    if (e.key === "Enter") handleAdd();
   };
 
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "ArrowUp") {
-        handleCountChange("increment");
-      } else if (e.key === "ArrowDown") {
-        handleCountChange("decrement");
-      } else if (e.key === "Enter") {
-        handleAdd();
-      }
-    };
-
-    window.addEventListener("keydown", handleKey);
-
-    return () => window.removeEventListener("keydown", handleKey);
-  }, [isOpen, count]);
-
   return (
-    <Dialog
-      open={isOpen}
-      onOpenChange={(open) => {
-        setIsOpen(open);
-        if (!open) setCount(1);
-      }}
-    >
+    <Dialog>
       <DialogTrigger>
         <ProductCard product={product} />
       </DialogTrigger>
-      <DialogContent>
+
+      <DialogContent onKeyDown={handleKeyDown} tabIndex={0}>
         <DialogHeader>
           <DialogTitle>{product.name}</DialogTitle>
           <DialogDescription>
-            Do you really want to add <strong>{product.name}</strong> to cart?
+            <Trans
+              i18nKey="cart.add_item.description"
+              values={{ product: product.name }}
+              components={{ strong: <strong /> }}
+            />
           </DialogDescription>
         </DialogHeader>
+
         <div className="border p-4 flex gap-4 items-center">
           <img
             src={`${IMAGE_URL}/${product.image_url}`}
@@ -93,7 +75,7 @@ export function ProductModal({ product }: { product: Product }) {
             <Button
               variant={count === 1 ? "default" : "outline"}
               size="sm"
-              onClick={() => handleCountChange("decrement")}
+              onClick={() => setCount((prev) => Math.max(1, prev - 1))}
               disabled={count === 1}
             >
               <Minus size={16} />
@@ -102,17 +84,20 @@ export function ProductModal({ product }: { product: Product }) {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => handleCountChange("increment")}
+              onClick={() => setCount((prev) => prev + 1)}
             >
               <Plus size={16} />
             </Button>
           </div>
         </div>
+
         <DialogFooter>
-          <DialogClose>
-            <Button variant="outline">Close</Button>
+          <DialogClose asChild>
+            <Button variant="outline">{t("buttons.cancel")}</Button>
           </DialogClose>
-          <Button onClick={handleAdd}>Add</Button>
+          <DialogClose asChild>
+            <Button onClick={handleAdd}>{t("buttons.add")}</Button>
+          </DialogClose>
         </DialogFooter>
       </DialogContent>
     </Dialog>

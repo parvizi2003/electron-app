@@ -15,9 +15,11 @@ import {
 import type { LoginFormValues } from "@/types";
 import { useLogin } from "@/api/auth/use-login";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 export function Login() {
   const { handleLogin, isPending, error } = useLogin();
+  const { t } = useTranslation();
 
   const {
     register,
@@ -34,12 +36,13 @@ export function Login() {
       console.error("Login error:", error.message);
     }
   }, [error]);
+
   return (
     <AuthLayout>
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center">
-          <CardTitle>Login to your account</CardTitle>
-          <CardDescription>Enter your email and password below</CardDescription>
+          <CardTitle>{t("login.title")}</CardTitle>
+          <CardDescription>{t("login.description")}</CardDescription>
         </CardHeader>
         <CardContent>
           <form
@@ -49,33 +52,33 @@ export function Login() {
           >
             <div className="grid gap-4">
               <div className="grid gap-1.5">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{t("login.email.label")}</Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="Enter your email"
-                  autoComplete="email"
+                  placeholder={t("login.email.placeholder")}
                   autoFocus
                   tabIndex={1}
-                  {...register("email", { required: "Email is required" })}
+                  {...register("email", {
+                    required: t("login.email.required"),
+                  })}
                 />
 
                 <InputError message={errors.email?.message} />
               </div>
 
               <div className="grid gap-1.5">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">{t("login.password.label")}</Label>
                 <Input
                   id="password"
                   type="password"
-                  placeholder="Enter your password"
-                  autoComplete="current-password"
+                  placeholder={t("login.password.placeholder")}
                   tabIndex={2}
                   {...register("password", {
-                    required: "Password is required",
+                    required: t("login.password.required"),
                     minLength: {
                       value: 8,
-                      message: "Password must be at least 8 characters",
+                      message: t("login.password.invalid"),
                     },
                   })}
                 />
@@ -89,11 +92,11 @@ export function Login() {
           <Button
             type="submit"
             form="loginForm"
-            className="w-full"
+            className="w-full font-bold"
             tabIndex={3}
-            // loading={isPending}
+            loading={isPending}
           >
-            Log in
+            {t("buttons.login")}
           </Button>
         </CardFooter>
       </Card>

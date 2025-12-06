@@ -15,22 +15,23 @@ import {
 import { Link } from "react-router-dom";
 import { useLogout } from "@/api/auth/use-logout";
 
-// Menu items.
-const items = [
-  {
-    title: "Home",
-    url: "/",
-    icon: Home,
-  },
-  {
-    title: "Orders",
-    url: "/orders",
-    icon: Inbox,
-  },
-];
+import { useTranslation } from "react-i18next";
 
 export function AppSidebar() {
   const { handleLogout, isPending } = useLogout();
+  const { t } = useTranslation();
+  const items = [
+    {
+      title: t("navbar.home"),
+      url: "/",
+      icon: Home,
+    },
+    {
+      title: t("navbar.orders"),
+      url: "/orders",
+      icon: Inbox,
+    },
+  ];
   return (
     <Sidebar>
       <SidebarContent>
@@ -54,7 +55,7 @@ export function AppSidebar() {
       </SidebarContent>
       <SidebarFooter>
         <Button onClick={handleLogout} loading={isPending}>
-          Log Out
+          {t("buttons.logout")}
         </Button>
       </SidebarFooter>
     </Sidebar>

@@ -8,6 +8,7 @@ import {
 } from "@/components/ui";
 import { OrderWithItems } from "@/types";
 import { LoadingButton } from "./loading-button";
+import { useTranslation } from "react-i18next";
 
 interface CookOrderCardProps {
   order: OrderWithItems;
@@ -22,21 +23,24 @@ export function CookOrderCard({
   isPending,
   isAcceptedOrder,
 }: CookOrderCardProps) {
+  const { t } = useTranslation();
   return (
     <Card className="w-full max-w-md  border border-muted-foreground/10">
       <CardHeader>
         <CardTitle className="text-3xl font-semibold">
-          🧾 Заказ #{order.id}
+          🧾 {t("order.number") + " # " + order.id}
         </CardTitle>
 
         <CardDescription className="text-sm text-primary  mt-2">
-          <strong>{order.address ? "С Собой" : "В заведении"}</strong>
+          <strong>
+            {order.address ? t("order.is_delivery") : t("order.in_store")}
+          </strong>
         </CardDescription>
       </CardHeader>
 
       <CardContent>
         <div className="mb-2 font-medium text-muted-foreground">
-          🧆 Позиции:
+          {t("order.positions")}:
         </div>
         <ul className="flex flex-col gap-3">
           {order.items.map((item) => (
@@ -55,7 +59,11 @@ export function CookOrderCard({
 
       <CardFooter className="flex justify-end pt-4">
         <LoadingButton
-          text={isAcceptedOrder ? "Завершить заказ" : "Принять заказ"}
+          text={
+            isAcceptedOrder
+              ? t("buttons.complete_order")
+              : t("buttons.accept_order")
+          }
           submit={() => handleSubmit(order.id)}
           loading={isPending}
         />
